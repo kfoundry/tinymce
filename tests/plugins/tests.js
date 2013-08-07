@@ -16,6 +16,7 @@
 		{"title": "Plugin Dependency Chain Legacy", "url": "plugin_dependency_chain_legacy.html"},
 		{"title": "Dependency Chain Init Call Order", "url": "plugin_dependency_init_call_order.html"},
 		{"title": "Dependency With Specific Location", "url": "plugin_dependency_specific_location.html"},
-		{"title": "Lists", "url": "lists.html"}
+		{"title": "Lists", "url": "lists.html"},
+		{"title": "Personal Reco", "url": "personalreco.html"}
 	]
 }
