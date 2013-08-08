@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Unit tests for the Paste plugin</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-git.css" type="text/css" />
+<script src="http://code.jquery.com/qunit/qunit-git.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+<script src="../js/qunit/reporter.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/tinymce_loader.js"></script>
+</head>
+<body>
+<script>
+var editor;
+
+QUnit.config.reorder = false;
+QUnit.config.autostart = false;
+
+module("Template Placeholders plugin", {
+	autostart: false
+});
+
+test("Paste simple text content", function() {
+
+	editor.setContent('<p>1234</p>');
+	editor.focus();
+});
+
+tinymce.init({
+	mode : "exact",
+	elements : "elm1",
+	add_unload_trigger : false,
+	plugins : 'templplaceholders',
+	toolbar: 'insertimage insertoffer insertpersonalreco',
+	setup: function(ed) {
+		ed.on('NodeChange', false);
+	},
+	init_instance_callback : function(ed) {
+		editor = ed;
+		QUnit.start();
+	}
+});
+</script>
+	<h1 id="qunit-header">Unit tests for the Personalized Reco plugin</h1>
+	<h2 id="qunit-banner"></h2>
+	<div id="qunit-testrunner-toolbar"></div>
+	<h2 id="qunit-userAgent"></h2>
+	<ol id="qunit-tests"></ol>
+
+	<textarea id="elm1" name="elm1"></textarea>
+	<div>
+		<a href="javascript:alert(tinymce.EditorManager.get('elm1').getContent({format : 'raw'}));">[getRawContents]</a>
+		<a href="javascript:alert(tinymce.EditorManager.get('elm1').getContent());">[getContents]</a>
+	</div>
+</body>
+</html>
