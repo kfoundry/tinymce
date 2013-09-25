@@ -1,6 +1,28 @@
 tinymce.PluginManager.add('templplaceholders', function(editor, url) {
+  var image_sizes = ['200x200', '728x90','160x600']; // This should eventually come from Metadata
+
   var templConfigurators = function (w, h) {
     return {
+      offer: {
+        title: 'Select Offer',
+        url: '/offers/select',
+        width: 500,
+        height: 175,
+        onsubmit: function(e) {
+          var doc = this.getEl('body').firstChild.contentWindow.document;
+          var form_data = {};
+
+          var f = _($($("form", doc)).serializeArray());
+          _(f).each(function (o) { form_data[o.name] = o.value; });
+
+          $.getJSON('/offers/' + form_data.offer_id + '.json', function (offer) {
+            var size = w + 'x' + h;
+            var idx = jQuery.inArray(size, image_sizes) + 1;
+            editor.insertContent('<a href="' + offer.url + '" class=c360-offer data-offer-id="' + form_data.offer_id + '"><img src="' + offer['img_url' + idx] + '" width="' + w + '" height="' + h + '"></a>');
+          });
+        }
+      },
+
       personalreco: {
         title: 'Personalized Reco',
         url: '/campaigns/personalizedreco',
@@ -23,7 +45,7 @@ tinymce.PluginManager.add('templplaceholders', function(editor, url) {
           {type: 'textbox', label: 'Image URL', name: 'img_url'}
         ],
         onsubmit: function (e) {
-          editor.insertContent('<img src=' + e.data.img_url + ' width="' + w + '" height="' + h + '">');
+          editor.insertContent('<img src=' + e.data.img_url + ' class=c360-image width="' + w + '" height="' + h + '">');
         }
       }      
     }
@@ -75,15 +97,16 @@ tinymce.PluginManager.add('templplaceholders', function(editor, url) {
   // Add a button that opens a window
   var windoConfig = function (idx) {
     var radioBehaviorFunc = radioBehavior(idx);
+    var radioButtons = [];
+    for (var i = 0, iLen = image_sizes.length; i < iLen; i++) {
+      var size = image_sizes[i];
+      radioButtons.push({type: 'radio', name: size, label: size , onclick: radioBehaviorFunc});
+    }
     return {
       width: 180,
       height: 125,     
       title: 'Image Size',
-      body: [
-        {type: 'radio', name: '200x200', label: '200x200' , onclick: radioBehaviorFunc},
-        {type: 'radio', name: '728x90', label: '728x90', onclick: radioBehaviorFunc},
-        {type: 'radio', name: '160x600', label: '160x600', onclick: radioBehaviorFunc}
-      ],
+      body: radioButtons,
       buttons: [{
                 text: 'Ok',
                 onclick: 'submit'
@@ -99,7 +122,7 @@ tinymce.PluginManager.add('templplaceholders', function(editor, url) {
       var label = '';
       tinymce.each(e.data, function (val, key) { if (val) label = key; });
       var parts = label.split('x'), w = parts[0], h = parts[1];
-      editor.insertContent('<!-- PLUGIN EDITED CONTENT BEGIN. (EDIT AT YOUR OWN RISK) --> <img src="http://placehold.it/' + label + '" class="c360-' + placeholder + '" width="' + w + '" height="' + h + '"><!-- PLUGIN EDITED CONTENT END --->');
+      editor.insertContent('<!-- PLUGIN EDITED CONTENT BEGIN. (EDIT AT YOUR OWN RISK) --> <img src="http://placehold.it/' + label + '" class="c360-placeholder c360-' + placeholder + '" width="' + w + '" height="' + h + '"><!-- PLUGIN EDITED CONTENT END --->');
     };
   };
 
@@ -117,23 +140,26 @@ tinymce.PluginManager.add('templplaceholders', function(editor, url) {
   var templButtons = {
     'insertoffer': {
       'tooltip': 'Insert Offer',
-      'icon': 'undo',
+      'icon': 'offer',
       'placeholder': 'offer'
     },
     'insertimage': {
       'tooltip': 'Insert Image',
-      'icon': 'cut',
+      'icon': 'image',
       'placeholder': 'img'
     },
     'insertpersonalreco': {
       'tooltip': 'Insert Personal Reco',
-      'icon': 'redo',
+      'icon': 'magic',
       'placeholder': 'personalreco'
     }
   };
 
   tinymce.each(templButtons, function (config, btn) {
-    editor.addButton(btn, tinymce.extend(btnConfig(config.placeholder), config));
+    var param = 'kf_' + config.placeholder + '_enabled';
+    if (editor.getParam(param, false)) {
+      editor.addButton(btn, tinymce.extend(btnConfig(config.placeholder), config));
+    }
   });
 
 });

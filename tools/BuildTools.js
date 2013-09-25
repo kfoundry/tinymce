@@ -294,7 +294,7 @@ exports.zip = function (options) {
 };
 
 exports.compileAmd = function (options) {
-	//options.verbose = true;
+	// options.verbose = true;
 	require("amdlc").compile(options);
 };
 
