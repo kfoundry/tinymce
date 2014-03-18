@@ -22,10 +22,15 @@ tinymce.PluginManager.add('templplaceholders', function(editor, url) {
             var offerURI = document.createElement('a');
             var sido = "__sido={{__kf_sido__}}";
             offerURI.href = offer.url;
-            queryParams = offerURI.search.substr(1).split('&');
+            queryParams = (offerURI.search === "") ? [] : offerURI.search.substr(1).split('&');
             queryParams.push(sido);
             offerURI.search = '?' + queryParams.join('&');
-            editor.insertContent('<a href="' + offerURI.href + '" class=c360-offer data-offer-id="' + form_data.offer_id + '"><img src="' + offer['img_url' + idx] + '" width="' + w + '" height="' + h + '"></a>');
+            var domEle = editor.dom.createHTML('a', {
+              "href" : offerURI.href,
+              "class" : "c360-offer",
+              "data-offer-id" :  form_data.offer_id
+            }, '<img src="' + offer['img_url' + idx] + '" width="' + w + '" height="' + h + '">');
+            editor.selection.setContent(domEle);
           });
         }
       },
