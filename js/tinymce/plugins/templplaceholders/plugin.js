@@ -20,7 +20,7 @@ tinymce.PluginManager.add('templplaceholders', function(editor, url) {
             var idx = jQuery.inArray(size, image_sizes) + 1;
             // Idea from https://gist.github.com/jlong/2428561
             var offerURI = document.createElement('a');
-            var sido = "__sido={{__kf_sido__}}";
+            var sido = '__sido={{offer_' + offer._id + '___kf_sido__}}';
             offerURI.href = offer.url;
             queryParams = (offerURI.search === "") ? [] : offerURI.search.substr(1).split('&');
             queryParams.push(sido);
