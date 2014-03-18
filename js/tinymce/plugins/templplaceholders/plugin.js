@@ -18,7 +18,14 @@ tinymce.PluginManager.add('templplaceholders', function(editor, url) {
           $.getJSON('/offers/' + form_data.offer_id + '.json', function (offer) {
             var size = w + 'x' + h;
             var idx = jQuery.inArray(size, image_sizes) + 1;
-            editor.insertContent('<a href="' + offer.url + '" class=c360-offer data-offer-id="' + form_data.offer_id + '"><img src="' + offer['img_url' + idx] + '" width="' + w + '" height="' + h + '"></a>');
+            // Idea from https://gist.github.com/jlong/2428561
+            var offerURI = document.createElement('a');
+            var sido = "__sido={{__kf_sido__}}";
+            offerURI.href = offer.url;
+            queryParams = offerURI.search.substr(1).split('&');
+            queryParams.push(sido);
+            offerURI.search = '?' + queryParams.join('&');
+            editor.insertContent('<a href="' + offerURI.href + '" class=c360-offer data-offer-id="' + form_data.offer_id + '"><img src="' + offer['img_url' + idx] + '" width="' + w + '" height="' + h + '"></a>');
           });
         }
       },
